@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday to My Favorite Human! 🎀</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght=300;400;500;600;700&family=Quicksand:wght=400;500;600;700&family=Caveat:wght=400;700&display=swap');
+        
+        :root {
+            --font-main: 'Quicksand', sans-serif;
+            --font-cute: 'Fredoka', sans-serif;
+            --font-hand: 'Caveat', cursive;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: linear-gradient(135deg, #fff0f5 0%, #ffe4e6 50%, #e0e7ff 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #4f46e5;
+        }
+
+        .cute-heading { font-family: var(--font-cute); }
+        .handwritten { font-family: var(--font-hand); }
+
+        /* Soft, Creamy Aesthetic Glassmorphism */
+        .aesthetic-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid rgba(255, 182, 193, 0.4);
+            box-shadow: 0 20px 40px -15px rgba(244, 63, 94, 0.1);
+        }
+
+        /* Scrapbook Polaroid Frames with Entrance Physics */
+        .polaroid {
+            background: white;
+            padding: 12px 12px 20px 12px;
+            box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0;
+            transform: translateY(40px) scale(0.85);
+            filter: blur(4px);
+        }
+
+        /* Dynamic Stagger Animation Activated via active-view class */
+        .active-view .polaroid {
+            animation: polaroidSpringIn 0.7s cubic-bezier(0.34, 1.6, 0.64, 1) forwards;
+        }
+
+        @keyframes polaroidSpringIn {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotate(var(--scrap-tilt));
+                filter: blur(0);
+            }
+        }
+
+        .polaroid:hover {
+            transform: scale(1.06) rotate(0deg) !important;
+            box-shadow: 0 20px 35px -8px rgba(244, 63, 94, 0.18);
+            z-index: 10;
+        }
+
+        /* Cute Washi Tape Decor Component */
+        .washi-tape {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 75px;
+            height: 24px;
+            background: rgba(254, 205, 211, 0.65);
+            backdrop-filter: blur(2px);
+            border-left: 3px dashed rgba(244, 63, 94, 0.2);
+            border-right: 3px dashed rgba(244, 63, 94, 0.2);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+        }
+        .polaroid:hover .washi-tape {
+            width: 95px;
+            background: rgba(254, 205, 211, 0.95);
+        }
+
+        /* Smooth Tab View Transitions */
+        .app-view {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        .app-view.active-view {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Floating Background Decorative Sparkles */
+        .floating-sparkle {
+            position: absolute;
+            pointer-events: none;
+            animation: floatUpDown 6s ease-in-out infinite;
+            opacity: 0.35;
+        }
+
+        @keyframes floatUpDown {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.15); }
+        }
+    </style>
+</head>
+<body class="relative flex flex-col items-center justify-between min-h-screen p-4 md:p-8">
+
+    <div id="sparkle-container" class="absolute inset-0 overflow-hidden w-full h-full z-0 pointer-events-none"></div>
+
+    <div id="lock-screen" class="z-10 m-auto w-full max-w-md aesthetic-card rounded-[2.5rem] p-8 text-center transition-all duration-700">
+        <div class="w-24 h-24 mx-auto mb-6 bg-gradient-to-tr from-pink-300 to-rose-400 rounded-full flex items-center justify-center shadow-md shadow-rose-200/50 animate-bounce">
+            <i class="fa-solid fa-envelope-open-text text-4xl text-white"></i>
+        </div>
+        <h2 class="text-3xl font-bold cute-heading text-rose-500 mb-2">Knock, Knock! 💌</h2>
+        <p class="text-sm text-slate-500 mb-6 font-medium">A special digital letter has arrived for my favorite person. Enter the secret password to open it!</p>
+        
+        <div class="relative mb-4">
+            <input type="password" id="pass-input" placeholder="Hint: Our secret nickname or word 🌸" 
+                   class="w-full px-6 py-4 rounded-2xl bg-white/90 border-2 border-pink-200 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent text-center font-medium transition duration-300 shadow-inner">
+        </div>
+        <p id="error-txt" class="text-rose-400 text-xs font-bold mb-4 opacity-0 transition-opacity duration-300">
+            <i class="fa-solid fa-heart-crack mr-1"></i> Wrong code! Try again, . ✨
+        </p>
+        
+        <button onclick="unlockPortal()" 
+                class="w-full bg-gradient-to-r from-pink-400 via-rose-400 to-purple-400 text-white font-bold py-4 rounded-2xl shadow-lg shadow-pink-200 hover:opacity-95 transition-all duration-300 transform hover:-translate-y-0.5 cute-heading tracking-wide">
+            Open Letter 🍰
+        </button>
+    </div>
+
+
+    <div id="main-dashboard" class="w-full max-w-6xl z-10 hidden opacity-0 transition-all duration-1000 flex flex-col justify-between flex-grow">
+        
+        <header class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
+            <div class="text-center md:text-left">
+                <span class="text-xs cute-heading tracking-wider text-rose-500 bg-pink-100 px-4 py-1.5 rounded-full border border-pink-200 font-semibold shadow-sm">🧁 It's Your Special Day!</span>
+                <h1 class="text-4xl md:text-5xl font-bold cute-heading mt-2 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-rose-500 to-purple-500">
+                    Happy Birthday, MOM! 🎉
+                </h1>
+            </div>
+            
+            <div class="aesthetic-card rounded-2xl px-5 py-3 flex items-center gap-4 max-w-xs border border-pink-100">
+                <div class="w-10 h-10 bg-pink-200 rounded-full flex items-center justify-center text-rose-400 animate-spin" style="animation-duration: 8s;">
+                    <i class="fa-solid fa-music text-lg"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-slate-700 cute-heading">Our Happy Beats</p>
+                    <p class="text-[10px] text-slate-400 truncate">Vibing together always 🌸</p>
+                </div>
+                <button onclick="togglePlayState(this)" class="w-8 h-8 rounded-full bg-pink-400 hover:bg-pink-500 text-white transition flex items-center justify-center text-xs shadow-sm">
+                    <i class="fa-solid fa-play ml-0.5"></i>
+                </button>
+            </div>
+        </header>
+
+        <main class="flex-grow mb-28">
+            
+            <div id="view-home" class="app-view active-view">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <div class="lg:col-span-2 aesthetic-card rounded-[2.5rem] p-8 relative overflow-hidden bg-white/80">
+                        <div class="absolute right-6 top-2 text-8xl text-pink-100 font-bold cute-heading select-none">🎂</div>
+                        <h2 class="text-2xl font-bold text-rose-500 cute-heading mb-4">Dearest MOM, ✨</h2>
+                        <p class="text-slate-600 leading-relaxed text-base md:text-lg font-medium mb-4">
+                            You gave me roots to grow and wings to fly,A guiding light that keeps me safe and high.Today we celebrate the heart of our home,Happy birthday, Mom, to you I owe my whole.
+                        <p class="text-slate-600 leading-relaxed text-base md:text-lg font-medium mb-6">
+                            Your gentle hands have wiped away my tears,Your loving voice has calmed my deepest fears.May your special day bring joy as pure and true,As all the boundless love you’ve given me and you.
+                        </p>
+                        <p class="handwritten text-3xl text-purple-500 font-bold">Forever your Son, varshil! </p>
+                    </div>
+
+                    <div class="lg:col-span-1 aesthetic-card rounded-[2.5rem] p-8 flex flex-col justify-between border-2 border-pink-300 bg-pink-50/50">
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-xs font-bold uppercase tracking-wider text-purple-500 cute-heading">Sweet Note Jar</span>
+                                <i class="fa-solid fa-candy-cane text-rose-400 text-xl animate-bounce"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-700 cute-heading mb-3">The Candy Jar 🍬</h3>
+                            <p id="compliment-box" class="text-slate-600 text-sm font-medium leading-relaxed bg-white/60 p-4 rounded-2xl border border-pink-100 min-h-[90px] flex items-center justify-center text-center italic">
+                                "Click the button to pull out a sweet fact about you!"
+                            </p>
+                        </div>
+                        <button onclick="generateVibe()" class="w-full mt-6 bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-bold py-3.5 px-4 rounded-2xl transition-all duration-300 text-xs cute-heading tracking-wider shadow-md shadow-pink-200">
+                            Take a Candy 🍬
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-gallery" class="app-view">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-slate-700 cute-heading flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-heart text-pink-400"></i>  Polaroid Scrapbook Grid ✨
+                    </h2>
+                    <p class="text-sm font-medium text-slate-500 mt-1">Stitched together with absolute unhinged chaos and infinite memories.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-2 max-w-6xl mx-auto">
+                    
+        
+
+                    <div class="polaroid relative rounded-sm mx-auto w-full max-w-[240px]" style="animation-delay: 100ms; --scrap-tilt: 2deg;">
+                        <div class="washi-tape"></div>
+                        <div class="overflow-hidden aspect-square bg-slate-100 mb-2">
+                            <img src="assets/image11.jpeg" alt="Bestie 2" class="w-full h-full object-cover">
+                        </div>
+                        <p class="handwritten text-xl text-slate-700 text-center font-bold truncate">Always Beautiful</p>
+                    </div>
+
+                    <div class="polaroid relative rounded-sm mx-auto w-full max-w-[240px]" style="animation-delay: 150ms; --scrap-tilt: -2.5deg;">
+                        <div class="washi-tape"></div>
+                        <div class="overflow-hidden aspect-square bg-slate-100 mb-2">
+                            <img src="assets/image22.jpeg" alt="Bestie 3" class="w-full h-full object-cover">
+                        </div>
+                        <p class="handwritten text-xl text-slate-700 text-center font-bold truncate">Aesthetic Perosn</p>
+                    </div>
+
+                    <div class="polaroid relative rounded-sm mx-auto w-full max-w-[240px]" style="animation-delay: 200ms; --scrap-tilt: 1.8deg;">
+                        <div class="washi-tape"></div>
+                        <div class="overflow-hidden aspect-square bg-slate-100 mb-2">
+                            <img src="assets/image33.jpeg" alt="Bestie 4" class="w-full h-full object-cover">
+                        </div>
+                        <p class="handwritten text-xl text-slate-700 text-center font-bold truncate">Little Queen 👑</p>
+                    </div>
+
+                    <div class="polaroid relative rounded-sm mx-auto w-full max-w-[240px]" style="animation-delay: 250ms; --scrap-tilt: -1deg;">
+                        <div class="washi-tape"></div>
+                        <div class="overflow-hidden aspect-square bg-slate-100 mb-2">
+                            <img src="assets/image44.jpeg" alt="Bestie 5" class="w-full h-full object-cover">
+                        </div>
+                        <p class="handwritten text-xl text-slate-700 text-center font-bold truncate">Shared Braincell Status 🧠</p>
+                    </div>
+
+                    <div class="polaroid relative rounded-sm mx-auto w-full max-w-[240px]" style="animation-delay: 300ms; --scrap-tilt: 2.2deg;">
+                        <div class="washi-tape"></div>
+                        <div class="overflow-hidden aspect-square bg-slate-100 mb-2">
+                            <img src="assets/image55.jpeg" alt="Bestie 6" class="w-full h-full object-cover">
+                        </div>
+                        <p class="handwritten text-xl text-slate-700 text-center font-bold truncate">Laughing at internal jokes 😂</p>
+                    </div>
+
+                    <div class="polaroid relative rounded-sm mx-auto w-full max-w-[240px]" style="animation-delay: 350ms; --scrap-tilt: -2deg;">
+                        <div class="washi-tape"></div>
+                        <div class="overflow-hidden aspect-square bg-slate-100 mb-2">
+                            <img src="assets/image66.jpeg" alt="Bestie 7" class="w-full h-full object-cover">
+                        </div>
+                        <p class="handwritten text-xl text-slate-700 text-center font-bold truncate">Pure Happiness 🧸</p>
+                    </div>
+
+                    <div class="polaroid relative rounded-sm mx-auto w-full max-w-[240px]" style="animation-delay: 400ms; --scrap-tilt: 1.2deg;">
+                        <div class="washi-tape"></div>
+                        <div class="overflow-hidden aspect-square bg-slate-100 mb-2">
+                            <img src="assets/image77.jpeg" alt="Bestie 8" class="w-full h-full object-cover">
+                        </div>
+                        <p class="handwritten text-xl text-slate-700 text-center font-bold truncate">The Main Character ✨</p>
+                    </div>
+
+                    <div class="polaroid relative rounded-sm mx-auto w-full max-w-[240px]" style="animation-delay: 450ms; --scrap-tilt: -1.8deg;">
+                        <div class="washi-tape"></div>
+                        <div class="overflow-hidden aspect-square bg-slate-100 mb-2">
+                            <img src="assets/image88.jpeg" alt="Bestie 9" class="w-full h-full object-cover">
+                        </div>
+                        <p class="handwritten text-xl text-slate-700 text-center font-bold truncate">Manifesting Greatness 💫</p>
+                    </div>
+
+                    <div class="polaroid relative rounded-sm mx-auto w-full max-w-[240px]" style="animation-delay: 500ms; --scrap-tilt: 2.5deg;">
+                        <div class="washi-tape"></div>
+                        <div class="overflow-hidden aspect-square bg-slate-100 mb-2">
+                            <img src="assets/image99.jpeg" alt="Bestie 10" class="w-full h-full object-cover">
+                        </div>
+                        <p class="handwritten text-xl text-slate-700 text-center font-bold truncate">Best Human Ever 🌸</p>
+                    </div>
+            <div id="view-coupons" class="app-view">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-slate-700 cute-heading flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-gift text-pink-400"></i>  Redeemable Coupons 🎟️
+                    </h2>
+                    <p class="text-sm font-medium text-slate-500 mt-1">Click each magic gift card to scratch it off and unlock your birthday vouchers!</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto px-2">
+                    
+                    <div class="relative overflow-hidden bg-white rounded-3xl p-6 text-center shadow-md border-2 border-dashed border-pink-200 cursor-pointer h-52 flex flex-col justify-center items-center group select-none" onclick="revealCoupon(this)">
+                        <div class="absolute inset-0 bg-gradient-to-br from-pink-300 via-rose-300 to-purple-300 flex flex-col justify-center items-center z-10 transition-all duration-500 rounded-[1.3rem] shadow-inner text-white group-hover:scale-[1.02]">
+                            <i class="fa-solid fa-sparkles text-3xl mb-2 animate-pulse"></i>
+                            <span class="text-xs font-bold cute-heading tracking-widest uppercase">Tap to Scratch ✨</span>
+                        </div>
+                        <div class="text-pink-400 text-4xl mb-2"><i class="fa-solid fa-cookie-bite"></i></div>
+                        <h4 class="font-bold cute-heading text-lg text-slate-700 mb-1">Golgapa Treat 🧋</h4>
+                        <p class="text-xs text-slate-500 font-semibold px-2">This ticket is redeemable for helping me in my life,this treat is on me!</p>
+                    </div>
+
+                    <div class="relative overflow-hidden bg-white rounded-3xl p-6 text-center shadow-md border-2 border-dashed border-pink-200 cursor-pointer h-52 flex flex-col justify-center items-center group select-none" onclick="revealCoupon(this)">
+                        <div class="absolute inset-0 bg-gradient-to-br from-pink-300 via-rose-300 to-purple-300 flex flex-col justify-center items-center z-10 transition-all duration-500 rounded-[1.3rem] shadow-inner text-white group-hover:scale-[1.02]">
+                            <i class="fa-solid fa-gift text-3xl mb-2 animate-pulse"></i>
+                            <span class="text-xs font-bold cute-heading tracking-widest uppercase">Tap to Scratch ✨</span>
+                        </div>
+                        <div class="text-purple-400 text-4xl mb-2"><i class="fa-solid fa-moon"></i></div>
+                        <h4 class="font-bold cute-heading text-lg text-slate-700 mb-1">One Day Out 🌙</h4>
+                        <p class="text-xs text-slate-500 font-semibold px-2">Valid for an one day full time with you without any digital appliances.</p>
+                    </div>
+
+                    <div class="relative overflow-hidden bg-white rounded-3xl p-6 text-center shadow-md border-2 border-dashed border-pink-200 cursor-pointer h-52 flex flex-col justify-center items-center group select-none" onclick="revealCoupon(this)">
+                        <div class="absolute inset-0 bg-gradient-to-br from-pink-300 via-rose-300 to-purple-300 flex flex-col justify-center items-center z-10 transition-all duration-500 rounded-[1.3rem] shadow-inner text-white group-hover:scale-[1.02]">
+                            <i class="fa-solid fa-star text-3xl mb-2 animate-pulse"></i>
+                            <span class="text-xs font-bold cute-heading tracking-widest uppercase">Tap to Scratch ✨</span>
+                        </div>
+                        <div class="text-rose-400 text-4xl mb-2"><i class="fa-solid fa-ticket"></i></div>
+                        <h4 class="font-bold cute-heading text-lg text-slate-700 mb-1">Movie Box office 🎬</h4>
+                        <p class="text-xs text-slate-500 font-semibold px-2">Entitles you to a theater movie ticket or a cozy custom streaming setup with snacks completely covered.</p>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+
+        <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 aesthetic-card px-4 py-3 rounded-3xl flex items-center gap-2 z-50 border border-pink-200/60 max-w-sm w-[90%] justify-around shadow-lg shadow-pink-200/40">
+            <button onclick="switchTab('home', this)" class="nav-btn flex flex-col items-center gap-1 px-4 py-1.5 rounded-xl text-rose-500 bg-pink-100/80 font-semibold transition-all duration-300">
+                <i class="fa-solid fa-house-heart text-lg"></i>
+                <span class="text-[10px] cute-heading tracking-wider uppercase">Home</span>
+            </button>
+            <button onclick="switchTab('gallery', this)" class="nav-btn flex flex-col items-center gap-1 px-4 py-1.5 rounded-xl text-slate-400 hover:text-rose-400 font-semibold transition-all duration-300">
+                <i class="fa-solid fa-wand-magic-sparkles text-lg"></i>
+                <span class="text-[10px] cute-heading tracking-wider uppercase">Scrapbook</span>
+            </button>
+            <button onclick="switchTab('coupons', this)" class="nav-btn flex flex-col items-center gap-1 px-4 py-1.5 rounded-xl text-slate-400 hover:text-rose-400 font-semibold transition-all duration-300">
+                <i class="fa-solid fa-gift text-lg"></i>
+                <span class="text-[10px] cute-heading tracking-wider uppercase">Gifts</span>
+            </button>
+        </nav>
+    </div>
+
+    <audio id="bg-music" src="assets\Ye-Kya-Baat-Hai-Aaj-Ki-Chandni-Me.mp3" loop></audio>
+
+    <script>
+        // 🔑 CONFIGURATION KEY CODES
+        const SECURE_TOKEN = "gotu"; // Change password here!
+
+        const compliments = [
+            "Your outfits are always 10/10 and completely aesthetic. 🎀",
+            "You have the absolute rarest, gold-tier sense of humor. 🍦",
+            "Thank you for listening to my bakwas talks without running away. 🍯",
+            "You make the most boring places feel like an absolute adventure! 🧸",
+            "Factual Statement: My world is 100x happier with you in it. 💕",
+            "You deserve a giant pile of cupcakes and all the happiness today! 🧁"
+        ];
+
+        // --- DECORATIVE FLOATING SPARKLE ANIMATION ---
+        function createAestheticBackground() {
+            const container = document.getElementById("sparkle-container");
+            const icons = ["fa-heart", "fa-star", "fa-sparkles", "fa-cloud"];
+            const colors = ["text-pink-200", "text-purple-200", "text-rose-200", "text-indigo-200"];
+            
+            for (let i = 0; i < 18; i++) {
+                let sparkle = document.createElement("i");
+                const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                sparkle.className = `fa-solid ${randomIcon} ${randomColor} floating-sparkle`;
+                sparkle.style.left = Math.random() * 95 + "vw";
+                sparkle.style.top = Math.random() * 90 + "vh";
+                sparkle.style.animationDelay = Math.random() * 5 + "s";
+                sparkle.style.fontSize = Math.random() * 15 + 12 + "px";
+                container.appendChild(sparkle);
+            }
+        }
+        window.onload = createAestheticBackground;
+
+        // --- LOCKSCREEN ACCESS CODE ---
+        function unlockPortal() {
+            const rawIn = document.getElementById("pass-input").value.trim().toLowerCase();
+            const err = document.getElementById("error-txt");
+
+            if (rawIn === SECURE_TOKEN) {
+                const lock = document.getElementById("lock-screen");
+                const dash = document.getElementById("main-dashboard");
+                
+                lock.classList.add("scale-95", "opacity-0");
+                setTimeout(() => {
+                    lock.style.display = "none";
+                    dash.classList.remove("hidden");
+                    setTimeout(() => {
+                        dash.classList.add("opacity-100");
+                        triggerPastelConfetti();
+                    }, 50);
+                }, 400);
+            } else {
+                err.classList.remove("opacity-0");
+                setTimeout(() => err.classList.add("opacity-0"), 3000);
+            }
+        }
+
+        document.getElementById("pass-input").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") unlockPortal();
+        });
+
+        // --- DYNAMIC TABS FUNCTION WITH RE-TRIGGER ANIMATION ---
+        function switchTab(viewId, element) {
+            document.querySelectorAll('.app-view').forEach(view => {
+                view.classList.remove('active-view');
+            });
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = "nav-btn flex flex-col items-center gap-1 px-4 py-1.5 rounded-xl text-slate-400 hover:text-rose-400 font-semibold transition-all duration-300";
+            });
+
+            const activeTarget = document.getElementById(`view-${viewId}`);
+            activeTarget.classList.add('active-view');
+            element.className = "nav-btn flex flex-col items-center gap-1 px-4 py-1.5 rounded-xl text-rose-500 bg-pink-100/80 font-semibold transition-all duration-300";
+
+            // If entering gallery, re-trigger staggered animations cleanly
+            if (viewId === 'gallery') {
+                const elements = activeTarget.querySelectorAll('.polaroid');
+                elements.forEach(el => {
+                    const existingAnim = el.style.animation;
+                    el.style.animation = 'none';
+                    el.offsetHeight; // Trigger DOM reflow to clear state
+                    el.style.animation = null; 
+                });
+            }
+        }
+
+        // --- RANDOM CANDY JAR NOTES ---
+        function generateVibe() {
+            const target = document.getElementById("compliment-box");
+            const select = compliments[Math.floor(Math.random() * compliments.length)];
+            target.style.opacity = 0;
+            setTimeout(() => {
+                target.innerText = select;
+                target.style.opacity = 1;
+            }, 200);
+        }
+
+        // --- AUDIO COMPONENT TRACKING ---
+        function togglePlayState(btn) {
+            const audio = document.getElementById("bg-music");
+            const icon = btn.querySelector('i');
+            if (audio.paused) {
+                audio.play();
+                icon.className = "fa-solid fa-pause";
+            } else {
+                audio.pause();
+                icon.className = "fa-solid fa-play ml-0.5";
+            }
+        }
+
+        // --- INTERACTIVE COUPON SCRATCH LOGIC ---
+        function revealCoupon(cardElement) {
+            const cover = cardElement.querySelector('.absolute');
+            if (cover && !cover.classList.contains('opacity-0')) {
+                cover.classList.add('opacity-0', 'scale-90', 'pointer-events-none');
+                triggerPastelConfetti();
+            }
+        }
+
+        // --- CUTE PASTEL CELEBRATION SHOWER ---
+        function triggerPastelConfetti() {
+            confetti({ 
+                particleCount: 60, 
+                spread: 50, 
+                origin: { y: 0.75 }, 
+                colors: ['#ffb6c1', '#ffc0cb', '#e6e6fa', '#fffacd', '#b0e0e6'] 
+            });
+        }
+    </script>
+</body>
+</html>
